@@ -1,7 +1,6 @@
 About
 =====
-该平台为[ansible](https://github.com/ansible/ansible)系统的web程序
-
+自动化综合管理平台 ~集成ansibleUI
 
 Function
 =====
@@ -20,7 +19,7 @@ Function
 
 UserManual
 =====
-[ansible_ui平台用户手册](https://github.com/alaxli/ansible_ui/tree/master/documents)
+[ansible_ui平台用户手册](https://github.com/yianjiajia/django_web_ansible/tree/master/documents)
 
 Requirements
 =====
@@ -46,10 +45,6 @@ Install
         source envansible/bin/active
 
 
-* 下载源码
-
-
-        git clone https://github.com/alaxli/ansible_ui.git
 
 
 * 安装依赖库
@@ -130,9 +125,7 @@ Run
         重启 httpd
 
 
-Demo
-=====
-* http://115.28.87.99:8888 用户名:admin 密码:ansible (由于服务器资源紧张，暂时关闭)
+
 
 Problem
 =====
