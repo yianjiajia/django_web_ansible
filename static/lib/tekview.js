@@ -77,7 +77,7 @@ var get_data=function(){
             x: -20 //center
         },
         subtitle: {
-            text: '泰信科技',
+            text: '某公司',
             x: -20
         },
         xAxis: {
