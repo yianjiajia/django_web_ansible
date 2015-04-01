@@ -207,7 +207,7 @@ def wiki(request):
 
 #未实现功能返回页
 def noreal(request):
-    html = '<html><head><title>泰信科技</title></head><body><center><h1>敬请期待!</h1></center></div></body></html>'
+    html = '<html><head><title>某科技公司</title></head><body><center><h1>敬请期待!</h1></center></div></body></html>'
     return HttpResponse(html)
 #web控制台
 def webcontrol(request):
