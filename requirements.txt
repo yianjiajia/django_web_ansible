@@ -1,0 +1,11 @@
+django-jsonfield
+django-auth-ldap  
+python-magic
+South
+simplejson
+#pil
+pexpect
+django-guardian
+python-ldap
+supervisor
+threadpool

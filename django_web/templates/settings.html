@@ -1,0 +1,27 @@
+{% extends "base.html" %}{% load i18n %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h3>{% trans "Settings" %}</h3>
+    </div>
+    <legend>{% trans "Language" %}</legend>
+    <div class="control-group">
+
+    <form id="langform" name="langform" action="/i18n/setlang/" method="post">
+    {% csrf_token %}
+        <select id="language" name="language" onchange="this.form.submit();">
+          {% if not request.COOKIES.django_language %}
+            <option  value="" selected="selected"></option>
+          {% endif %}
+          {% for lang in LANGUAGES %}
+            <option value="{{ lang.0 }}" {% if request.COOKIES.django_language == lang.0 %}selected="selected"{% endif %}>
+              {{ lang.1 }}
+            </option>
+          {% endfor %}
+        </select>
+
+    </form>
+</div>
+</div>
+
+{% endblock %}

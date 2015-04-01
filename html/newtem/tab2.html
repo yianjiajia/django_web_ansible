@@ -1,0 +1,38 @@
+{% extends "newtem/resource.html" %}
+ {% block active %}
+                <li role="presentation" ><a href="/testresource/">app资源列表</a></li>
+                    <li role="presentation" class="active"><a href="/testresource/2">IP地址资源统计</a></li>
+                        <li role="presentation"><a href="/testresource/3">主机账户密码</a></li>
+                 {% endblock %}
+{% block table %}
+
+                <table id='tab1' cellpadding='0' cellspacing='0' class="table table-hover table-striped table-bordered " style="table-layout:fixed;">
+                    <thead>
+                    <tr>
+                        <th style="width:25%;">IP地址</th>
+                        <th style="width:25%;">是否使用</th>
+                        <th style="width:25%;">备注</th>
+                        <th style="width:10%;">管理</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in list%}
+                    <tr>
+
+                        <td>{{ i.ip }}</td>
+                        <td>{{ i.useornot }}</td>
+                        <td>{{ i.beizhu }}</td>
+
+                        <td>
+
+                            <a id="test" href=""><i class="icon-pencil"></i></a>
+                            <a href="#myModal" role="button" data-toggle="modal"><i class="icon-remove"></i></a>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+                {% endblock %}
+

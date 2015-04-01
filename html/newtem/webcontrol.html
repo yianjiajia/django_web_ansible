@@ -1,0 +1,42 @@
+{% extends "newtem/resource.html" %}
+{% block page-title %}Web控制台{% endblock %}
+{% block href %} {% endblock %}
+{% block myModal1 %} {% endblock %}
+{% block active %} {% endblock %}
+{% block table %}
+ <ul class="nav nav-pills">
+    <li>
+    <a href="https://192.168.0.88:5480/#core" target="_blank"><button class="btn">
+        <strong>Vmware vcenter服务管理</strong>
+        <span class="label label-info">
+            <i class="icon-user"></i>用户名：root
+        </span>
+        <span class="label label-info">密码：vmware
+            </span>
+           </button>
+    </a>
+     </li>
+    <li><a href="https://192.168.0.88:9443/vsphere-client/" target="_blank"><button class="btn">
+        <strong>Vsphere-client</strong>
+        <span class="label label-info">
+            <i class="icon-user"></i>用户名：root
+        </span>
+         <span class="label label-info">密码：vmware
+            </span>
+           </button>
+    </a>
+    </li>
+    <li><a href="https://192.168.0.60:446/" target="_blank"><button class="btn">
+        <strong>存储服务器web控制台</strong>
+        <span class="label label-info">
+            <i class="icon-user"></i>用户名：openfiler
+        </span>
+         <span class="label label-info">密码：password
+          </span>
+          </button>
+    </a>
+    </li>
+ </ul>
+{% endblock %}
+{% block pagination %} {% endblock %}
+
