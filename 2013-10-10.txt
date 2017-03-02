@@ -1,4 +1,0 @@
-CPU Load Percentage        : 4%
-Total Physical Memory      : 3325 MB
-Available Physical Memory  : 2480 MB
-Physical Memory Percentage : 25%
