@@ -1,0 +1,262 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{ LANGUAGE_CODE }}" lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="utf-8">
+	<title>某科技公司</title>
+    <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+	
+   <link type="text/css" href="/static/ext/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/stylesheets/theme.css">
+    <link rel="stylesheet" href="/static/lib/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/tekview.css">
+    <script src="/static/ext/js/jquery/jquery-1.8.1.min.js"></script>
+     <script src="/static/lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="/static/lib/tekview.js"  type="text/javascript" charset="gbk"></script>
+    
+   
+    <link type="text/css" href="/static/ext/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link type="text/css" href="/static/ext/css/font-awesome.min.css" rel="stylesheet">
+    <link type="text/css" href="/static/ext/css/jquery-ui.css" rel="stylesheet">
+    <link type="text/css" href="/static/ext/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <link type="text/css" href="/static/css/portal.css" rel="stylesheet">
+
+
+
+
+    
+    <script src="/static/ext/js/jquery/jquery-ui.min.js"></script>
+    <script src="/static/ext/js/jquery/jquery.bsFormAlerts.min.js"></script>
+    <script src="/static/ext/js/jquery/plugins/jquery.validate.min.js"></script>
+    <!--script src="/static/ext/js/jquery/plugins/jquery.validate.messages_zh.js"></script-->
+    <script src="/static/ext/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/static/ext/js/highcharts.js"></script>
+
+
+
+
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function(){
+            $(".navbar .nav-tooltip").tooltip({
+                delay:0,
+                placement:'bottom'});
+        });
+    </script>
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="/static/ext/js/html5.js"></script>
+    <![endif]-->
+    <!--[if IE 7]>
+        <link type="text/css" rel="stylesheet" href="/static/ext/css/font-awesome-ie7.min.css"/>
+    <![endif]-->
+
+    <style>
+		#line-chart {
+            height:300px;
+            width:800px;
+            margin: 0px auto;
+            margin-top: 1em;
+        }
+        .brand { font-family: georgia, serif; }
+        .brand .first {
+            color: #ccc;
+            font-style: italic;
+        }
+        .brand .second {
+            color: #fff;
+            font-weight: bold;
+        }
+        .anniu {
+            background-color:#e7d785;
+            font-style:georgia;
+            background-image: -moz-linear-gradient(center top , #fffeb8, #c49c38);
+        }
+        .navbar-inner {
+            position:fixed;
+            left:0px;
+            top:0px;
+            z-index:20;
+            width:100%;
+            hight:45px;
+            background:#ccc
+        }
+        .blank{ clear:both; overflow:hidden; display:block; overflow:hidden;height:37px;}
+     
+	   .container-fluid {
+            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+            padding-bottom: 40px; /* 60px to make the container go all the way to the bottom of the topbar */
+         /*   background: url(/static/img/background.jpg); */
+            font-family:微软雅黑;
+        } 
+        @media (max-width:979px){
+            body {
+                padding-top: 0;
+            }
+        }
+
+         input[type=search] {
+            width: 150px;
+            -moz-transition: width 0.5s ease-out;
+            -webkit-transition: width 0.5s ease-out;
+            transition: width 0.5s ease-out;
+        }
+         input[type=search]:focus {
+            width: 200px;
+            -moz-transition: width 0.5s ease-out;
+            -webkit-transition: width 0.5s ease-out;
+            transition: width 0.5s ease-out;
+        }
+      .footer {
+          text-align:center; 
+          margin:0 auto;
+          margin-top:50px; 
+          padding:30px 0; 
+          clear:both; 
+          overflow:hidden; 
+          color:#838383;
+      }
+      table.table.table-border {
+        border: 2px double #ebebeb;
+      } 
+	
+    </style>
+</head>
+<body class="">
+<!--<![endif]-->
+
+<div class="navbar">
+    <div class="navbar-inner">
+        <ul class="nav pull-right">
+            <li id="fat-menu" class="dropdown">
+                <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="icon-user"></i> {{ username }}
+                    <i class="icon-caret-down"></i>
+                </a>
+
+                <ul class="dropdown-menu">
+                    <li><a tabindex="-1" href="#">我的账户</a></li>
+                    <li class="divider"></li>
+                    <li><a tabindex="-1" class="visible-phone" href="#">setting</a></li>
+                    <li class="divider visible-phone"></li>
+                    <li><a tabindex="-1" href="{% url "devops.auth.views.dt_logout" %}">注销</a></li>
+                </ul>
+            </li>
+
+        </ul>
+        <a class="brand"><span class="first"></span> <span class="second">内部资源管理系统</span></a>
+    </div>
+</div>
+<span class="blank"></span>
+
+<div class="sidebar-nav">
+    <form class="search form-inline">
+        <input type="text" placeholder="查找...">
+    </form>
+
+    <a href="#dashboard-menu" class="nav-header" data-toggle="collapse"><i class="icon-dashboard"></i>资源管理<i class="icon-chevron-up"></i></a>
+    <ul id="dashboard-menu" class="nav nav-list collapse in">
+        <li ><a href="{% url "gaga.views.index" %}">首页</a></li>
+        <li ><a href="{% url "gaga.views.testresource" %}">资源列表</a></li>
+        <li ><a href="#">资源申请</a></li>
+        <li ><a href="{% url "gaga.views.wiki" %}">知识库</a></li>
+        <li ><a href="{% url "gaga.views.samba" %}">服务器管理</a></li>
+    </ul>
+
+     <a href="#accounts-menu" class="nav-header" data-toggle="collapse"><i class="icon-briefcase"></i>业务管理<i class="icon-chevron-up"></i></a>
+        <ul id="accounts-menu" class="nav nav-list collapse">
+             <li ><a href="{% url 'gaga.views.noreal'%}" target="_blank">版本发布</a></li>
+            <li ><a href="{% url 'gaga.views.noreal'%}" target="_blank">自动化测试</a></li>
+            <li ><a href="{% url 'gaga.views.noreal'%}" target="_blank">测试报告</a></li>
+        </ul>
+
+        <a href="#error-menu" class="nav-header collapsed" data-toggle="collapse"><i class="icon-exclamation-sign"></i> Devops<i class="icon-chevron-up"></i></a>
+        <ul id="error-menu" class="nav nav-list collapse">
+            <li ><a href="/ansible">Ansible</a></li>
+            <li ><a href="{% url 'gaga.views.noreal'%}" target="_blank">Zabbix</a></li>
+            <li ><a href="{% url 'gaga.views.noreal'%}" target="_blank">Cobbler</a></li>
+
+        </ul>
+
+        <a href="#legal-menu" class="nav-header" data-toggle="collapse"><i class="icon-legal"></i>统一终端<i class="icon-chevron-up"></i></a>
+        <ul id="legal-menu" class="nav nav-list collapse">
+
+           <li ><a href="https://192.168.6.174" target="_blank">webSSH</a></li>
+        </ul>
+
+    <a href="{% url 'gaga.views.webcontrol'%}" class="nav-header"><i class="icon-question-sign"></i>Web控制台</a>
+
+</div>
+
+
+<div class="content">
+
+    <div class="header">
+
+        <h1 class="page-title">Ansible</h1>
+
+    </div>
+
+	
+	
+{% trans "Ansible UI" as uHome %}
+{% trans "beta" as ubeta %}
+<div class="container">
+        <div class="container" >
+            <div style="padding:1px;background-color:#F0FFFF">
+                    
+            {% trans "User" as uUser %}
+            {% trans "Projects" as uProjects %}
+            {% trans "Help" as uHelp %}
+            {% trans "Wiki" as uWiki %}
+            {% trans "AnsibleDocs" as uAnsibleDocs %}
+                <ul class="nav nav-pills" id="nav">
+                    <li class="divider-vertical"></li>
+                    <li>
+						<a class="nav-tooltip" title="Projects" href="/ansible/projects">{{ uProjects }}</a>
+                    </li>
+
+                    <li class="divider-vertical"></li>
+                    <li>
+                    <a class="nav-tooltip" title={{ uUser }} href="/account">{{ uUser }}</a>
+                    </li>
+                    <li class="divider-vertical"></li>
+
+                    <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ uHelp }}<b class="caret"></b></a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                        <li><a tabindex="-1" href="http://docs.ansible.com/" target="_blank">{{ uAnsibleDocs }}</a></li>
+                    </ul>
+                    </li>
+					<li>
+						<li>
+                <a href="{% url "profile" user.username %}" class="nav-tooltip" title={% trans "MyProfile" %}>用户
+                    </a>
+					</li>
+                <li>
+                <a href="{% url "devops.views.settings" %}" class="nav-tooltip" title={% trans "Settings" %}>设置
+                    </a>
+                </li>
+				</li>
+                </ul>          
+        
+    </div> 	
+</div> 
+</div>
+<div class="container">
+    {% block content %}content{% endblock %}
+</div>
+
+<div class="footer">
+    &copy; 2015 {% trans "Gaga yan" %}
+</div>
+<script type="text/javascript">
+    $(function(){
+        $(".alert").alert()
+    })
+</script>
+</body>
+</html>

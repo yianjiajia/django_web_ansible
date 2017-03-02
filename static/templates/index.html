@@ -1,0 +1,337 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>某科技公司</title>
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="stylesheet" type="text/css" href="{% static "lib/bootstrap/css/bootstrap.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "stylesheets/theme.css" %}">
+    <link rel="stylesheet" href="{% static "lib/font-awesome/css/font-awesome.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "css/tekview.css" %}">
+    <script src="{% static "lib/jquery-1.7.2.min.js" %}" type="text/javascript"></script>
+    <script src="{% static "lib/bootstrap/js/bootstrap.js" %}" type="text/javascript"></script>
+    <script src="{% static "lib/highcharts.js" %}" type="text/javascript"></script>
+    <script src="{% static "lib/tekview.js" %}" type="text/javascript" charset="gbk"></script>
+    <script type="text/javascript">
+     $(function(){
+     get_data();
+     setInterval("get_data()",200000);//200秒一次执行
+    });
+     </script>
+
+    <style type="text/css">
+
+        #line-chart {
+            height:300px;
+            width:800px;
+            margin: 0px auto;
+            margin-top: 1em;
+        }
+        .brand { font-family: georgia, serif; }
+        .brand .first {
+            color: #ccc;
+            font-style: italic;
+        }
+        .brand .second {
+            color: #fff;
+            font-weight: bold;
+        }
+        .navbar-inner {
+            position:fixed;
+            left:0px
+            top:0px
+            z-index:0;
+            width:100%;
+            hight:0px;
+            background: #ccc
+
+
+        }
+        .blank{ clear:both; overflow:hidden; display:block; overflow:hidden;height:37px;}
+
+    </style>
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+
+  </head>
+
+  <!--[if lt IE 7 ]> <body class="ie ie6"> <![endif]-->
+  <!--[if IE 7 ]> <body class="ie ie7 "> <![endif]-->
+  <!--[if IE 8 ]> <body class="ie ie8 "> <![endif]-->
+  <!--[if IE 9 ]> <body class="ie ie9 "> <![endif]-->
+  <!--[if (gt IE 9)|!(IE)]><!--> 
+  <body class=""  onload="startTime()">
+  <!--<![endif]-->
+    
+   <div class="navbar">
+    <div class="navbar-inner">
+        <ul class="nav pull-right">
+
+            <li><a href="#" class="hidden-phone visible-tablet visible-desktop" role="button">功能未添加</a></li>
+            <li id="fat-menu" class="dropdown">
+                <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="icon-user"></i> {{ username }}
+                    <i class="icon-caret-down"></i>
+                </a>
+
+                <ul class="dropdown-menu">
+                    <li><a tabindex="-1" href="#">我的账户</a></li>
+                    <li class="divider"></li>
+                    <li><a tabindex="-1" class="visible-phone" href="#">setting</a></li>
+                    <li class="divider visible-phone"></li>
+                    <li><a tabindex="-1" href="{% url "devops.auth.views.dt_logout" %}">注销</a></li>
+                </ul>
+            </li>
+
+        </ul>
+        <a class="brand"><span class="first"></span> <span class="second">内部资源管理系统</span></a>
+    </div>
+</div>
+<span class="blank"></span>
+
+    
+    <div class="sidebar-nav">
+        <form class="search form-inline">
+            <input type="text" placeholder="查找...">
+        </form>
+
+        <a href="#dashboard-menu" class="nav-header" data-toggle="collapse"><i class="icon-dashboard"></i>资源管理<i class="icon-chevron-up"></i></a>
+        <ul id="dashboard-menu" class="nav nav-list collapse in">
+            <li ><a href=".">首页</a></li>
+            <li ><a href="testresource/" >资源列表</a></li>
+            <li ><a href="#">资源申请</a></li>
+            <li ><a href="wiki/">知识库</a></li>
+            <li ><a href="samba/">服务器管理</a></li>
+        </ul>
+
+        <a href="#accounts-menu" class="nav-header" data-toggle="collapse"><i class="icon-briefcase"></i>业务管理<i class="icon-chevron-up"></i></a>
+        <ul id="accounts-menu" class="nav nav-list collapse">
+            <li ><a href="{% url 'gaga.views.noreal'%}" target="_blank">项目汇总</a></li>
+            <li ><a href="{% url 'gaga.views.noreal'%}" target="_blank"></a></li>
+            <li ><a href="{% url 'gaga.views.noreal'%}" target="_blank">3</a></li>
+        </ul>
+
+        <a href="#error-menu" class="nav-header collapsed" data-toggle="collapse"><i class="icon-exclamation-sign"></i> Devops<i class="icon-chevron-up"></i></a>
+        <ul id="error-menu" class="nav nav-list collapse">
+            <li ><a href="/ansible">Ansible</a></li>
+            <li ><a href="{% url 'gaga.views.noreal'%}" target="_blank">Zabbix</a></li>
+            <li ><a href="{% url 'gaga.views.noreal'%}" target="_blank">Cobbler</a></li>
+
+        </ul>
+
+        <a href="#legal-menu" class="nav-header" data-toggle="collapse"><i class="icon-legal"></i>统一终端<i class="icon-chevron-up"></i></a>
+        <ul id="legal-menu" class="nav nav-list collapse">
+
+            <li ><a href="{% url 'gaga.views.term'%}" target="_blank">webSSH</a></li>
+        </ul>
+
+        <a href="{% url 'gaga.views.webcontrol'%}" class="nav-header" ><i class="icon-question-sign"></i>Web控制台</a></br></br>
+        <div style="width:250px;height:320px;">
+        <form  name="mail" action="MAILTO:jiajia.yan@tekview.com" method="post" enctype="text/plain">
+            <p><font color='gray'>您是：</font></p>
+            <input type="text" name="我是" style="background-color:#8DB6CD" />
+                <p><font color='gray'>您的需求：</font></p>
+                 <textarea name="我的需求" id="textarea" cols="45" rows="5" style="background-color:#8DB6CD" ></textarea>
+            <button type="submit" class="btn btn-info">发送邮件</button>
+            </form>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+
+        <div class="header">
+            <div class="stats">
+
+        </div>
+
+            <h1 class="page-title">首页</h1>
+        </div>
+        
+
+
+        <div class="container-fluid">
+            <div class="row-fluid">
+                    
+
+<div class="row-fluid">
+    <div id ="txt" class="alert alert-info">
+    </div>
+
+    <div class="block">
+        <a href="#page-stats" class="block-heading" data-toggle="collapse">文件服务器最新状态</a>
+        <div id="page-stats" class="block-body collapse in">
+            <div id="container-test" class="stat-widget-container" style="min-width:600px;height:300px">
+
+            </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="block span6">
+        <a href="#tablewidget" class="block-heading" data-toggle="collapse">资源列表<span class="label label-warning">+10</span></a>
+        <div id="tablewidget" class="block-body collapse in">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>主机</th>
+                  <th>用户名</th>
+                  <th>密码</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Mark</td>
+                  <td>Tompson</td>
+                  <td>the_mark7</td>
+                </tr>
+                <tr>
+                  <td>Ashley</td>
+                  <td>Jacobs</td>
+                  <td>ash11927</td>
+                </tr>
+                <tr>
+                  <td>Audrey</td>
+                  <td>Ann</td>
+                  <td>audann84</td>
+                </tr>
+                <tr>
+                  <td>John</td>
+                  <td>Robinson</td>
+                  <td>jr5527</td>
+                </tr>
+                <tr>
+                  <td>Aaron</td>
+                  <td>Butler</td>
+                  <td>aaron_butler</td>
+                </tr>
+                <tr>
+                  <td>Chris</td>
+                  <td>Albert</td>
+                  <td>cab79</td>
+                </tr>
+              </tbody>
+            </table>
+            <p><a href="testresource/2/" target="_top">更多...</a></p>
+        </div>
+    </div>
+    <div class="block span6">
+        <a href="#widget1container" class="block-heading" data-toggle="collapse">上传Execl</a>
+        <div id="widget1container" class="block-body collapse in">
+            <form action="" enctype="multipart/form-data" name="form1" method="post" id="form1">
+                {% csrf_token %}
+                       {{ form.file.errors }}
+                          {{form.file}}
+                       <button type="submit"  class="default" name="_save"><i class="icofont-upload-alt"></i>上传</button>
+                  <form>
+                 </div>
+             </div>
+          </div>
+
+<div class="row-fluid">
+    <div class="block span6">
+        <div class="block-heading">
+            <span class="block-icon pull-right">
+                <a href="#" class="demo-cancel-click" rel="tooltip" title="Click to refresh"><i class="icon-refresh"></i></a>
+            </span>
+
+            <a href="#widget2container" data-toggle="collapse">#</a>
+        </div>
+        <div id="widget2container" class="block-body collapse in">
+            <table class="table list">
+              <tbody>
+                  <tr>
+                      <td>
+                          <p><i class="icon-user"></i> Mark Otto</p>
+                      </td>
+                      <td>
+                          <p>Amount: $1,247</p>
+                      </td>
+                      <td>
+                          <p>Date: 7/19/2012</p>
+                          <a href="#">View Transaction</a>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          <p><i class="icon-user"></i> Audrey Ann</p>
+                      </td>
+                      <td>
+                          <p>Amount: $2,793</p>
+                      </td>
+                      <td>
+                          <p>Date: 7/12/2012</p>
+                          <a href="#">View Transaction</a>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          <p><i class="icon-user"></i> Mark Tompson</p>
+                      </td>
+                      <td>
+                          <p>Amount: $2,349</p>
+                      </td>
+                      <td>
+                          <p>Date: 3/10/2012</p>
+                          <a href="#">View Transaction</a>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          <p><i class="icon-user"></i> Ashley Jacobs</p>
+                      </td>
+                      <td>
+                          <p>Amount: $1,192</p>
+                      </td>
+                      <td>
+                          <p>Date: 1/19/2012</p>
+                          <a href="#">View Transaction</a>
+                      </td>
+                  </tr>
+
+              </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row-fluid">
+    <div class="block span6">
+        <p class="block-heading" data-toggle="collapse">知识库</p>
+        <div class="block-body">
+            <h2>Tip of the Day</h2>
+            <p></p>
+            <p><a class="btn btn-primary btn-large">？</a></p>
+        </div>
+    </div>
+</div>
+
+
+                    
+                    <footer>
+                        <hr>
+
+                        <p>&copy; 2014<a href="javascript:void(0)" target="_blank">APEX</a></p>
+                    </footer>
+                    
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $("[rel=tooltip]").tooltip();
+        $(function() {
+            $('.demo-cancel-click').click(function(){return false;});
+        });
+    </script>
+    
+  </body>
+</html>
+
+
