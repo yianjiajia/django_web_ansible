@@ -86,7 +86,7 @@ INSTALLED_APPS = (
     'django_web.pagination',
 #    # Uncomment the next line to enable admin documentation:
 #    'django.contrib.admindocs',
-    'south',
+    #'south',
     'kombu.transport.django',
     'djcelery',
     'apps.ansible',
@@ -216,7 +216,7 @@ LOGGING = {
         'file_handler': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/tmp/ansible_debug.log',
+            'filename': 'E:\workspace\django_web_ansible/server.log',
             'formatter': 'simple'
         },
     },
