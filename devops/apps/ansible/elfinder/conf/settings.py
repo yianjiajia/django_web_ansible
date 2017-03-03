@@ -1,7 +1,7 @@
 from os.path import join
 from django.conf import settings
-from apps.ansible.elfinder.utils.accesscontrol import fs_standard_access
-from apps.ansible.elfinder.volumes.filesystem import ElfinderVolumeLocalFileSystem
+from devops.apps.ansible.elfinder.utils.accesscontrol import fs_standard_access
+from devops.apps.ansible.elfinder.volumes.filesystem import ElfinderVolumeLocalFileSystem
 
 ELFINDER_JS_URLS = {
     'a_jquery' : '//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',

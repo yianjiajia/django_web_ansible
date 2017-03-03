@@ -1,8 +1,8 @@
 import os, re
 from django.conf import settings
 from django.utils import unittest
-from elfinder.volumes.filesystem import ElfinderVolumeLocalFileSystem
-from elfinder.volumes.storage import ElfinderVolumeStorage
+from devops.apps.ansible.elfinder.volumes.filesystem import ElfinderVolumeLocalFileSystem
+from devops.apps.ansible.elfinder.volumes.storage import ElfinderVolumeStorage
 
 class ElfinderVolumeLocalFileSystemTestCase(unittest.TestCase):
     volume_class = ElfinderVolumeLocalFileSystem

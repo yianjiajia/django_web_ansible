@@ -1,54 +1,84 @@
-<!DOCTYPE html PUBLIC "-//w3c//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//w3c//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns='http://www.w3.org/1999/xhtml'>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>测试环境发布平台</title>
-<style type='text/css'>
-table{border:1px solid  #003366; border-width:1px 0 0 1px; margin:2px 0 2px 0; text-align:center; border-collapse:collapse;}
-td,th{border:1px solid #003366; border-width:0 1px 1px 0;margin:2px 0 2px 0;text-align:center;background-color:#FFFFFF;}
-th{text-align:center;font-weight:600;font-size:14px;background-color:#003366;color:#FFFFFF}
-tr.t1 td {background-color:#fff;} /* 第一行的背景色*/
-tr.t2 td {background-color:#eee;}
-tr.t3 td {background-color:#ccc;}
-</style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>测试环境发布平台</title>
+    <style type='text/css'>
+        table {
+            border: 1px solid #003366;
+            border-width: 1px 0 0 1px;
+            margin: 2px 0 2px 0;
+            text-align: center;
+            border-collapse: collapse;
+        }
+
+        td, th {
+            border: 1px solid #003366;
+            border-width: 0 1px 1px 0;
+            margin: 2px 0 2px 0;
+            text-align: center;
+            background-color: #FFFFFF;
+        }
+
+        th {
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            background-color: #003366;
+            color: #FFFFFF
+        }
+
+        tr.t1 td {
+            background-color: #fff;
+        }
+
+        /* 第一行的背景色*/
+        tr.t2 td {
+            background-color: #eee;
+        }
+
+        tr.t3 td {
+            background-color: #ccc;
+        }
+    </style>
 </head>
 <body>
 <center><h1>Linux测试环境发布平台</h1></center>
 <table width='50%' cellpadding='0' cellspacing='0' id='tab'>
-          <tr>
-          <th width='17%'>用户</th>
-          <th width='17%'>性别</th>
-          <th width='22%'>密码</th>
-          <th width='44%'>邮件地址</th>
-          </tr>
-          {% for user in address %}
-          <tr>
-          <td>{{ user }}</td>
-          <td>{{ user.sex}}</td>
-          <td>{{ user.password }}</td>
-          <td>{{ user.email }}</td>
-          </tr>
-          {% endfor %}
+    <tr>
+        <th width='17%'>用户</th>
+        <th width='17%'>性别</th>
+        <th width='22%'>密码</th>
+        <th width='44%'>邮件地址</th>
+    </tr>
+    {% for user in address %}
+        <tr>
+            <td>{{ user }}</td>
+            <td>{{ user.sex }}</td>
+            <td>{{ user.password }}</td>
+            <td>{{ user.email }}</td>
+        </tr>
+    {% endfor %}
 </table>
 <script type="text/javascript">
+    var Ptr = document.getElementById("tab").getElementsByTagName("tr");
+    function $() {
+        for (i = 1; i < Ptr.length + 1; i++) {
+            Ptr[i - 1].className = (i % 2 > 0) ? "t1" : "t2";
+        }
+    }
+    window.onload = $;
+    for (var i = 0; i < Ptr.length; i++) {
+        Ptr[i].onmouseover = function () {
+            this.tmpClass = this.className;
+            this.className = "t3";
+        };
+        Ptr[i].onmouseout = function () {
+            this.className = this.tmpClass;
+        };
+    }
 
-          var Ptr=document.getElementById("tab").getElementsByTagName("tr");
-        function $(){
-            for(i=1; i<Ptr.length+1; i++){
-                Ptr[i-1].className = (i%2>0)?"t1":"t2";
-                }
-            }
-        window.onload=$;
-        for (Var i=0; i<Ptr.length; i++){
-            Ptr[i].onmouseover=function(){
-                this.tmpClass = this.className;
-                this.className = "t3";
-                };
-            Ptr[i].onmouseout=function(){
-                this.className=this.tmpClass;
-                };
-            }
-         
 </script>
 </body>
 </html>

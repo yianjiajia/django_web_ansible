@@ -54,7 +54,7 @@ SECRET_KEY = '*a=*nsyy-f8+&jb$t1)%!u3dge8t-9nk0n0p4rx+bsa46u^y^i'
 
 
 TEMPLATE_DEBUG = True
-STATIC_ROOT = 'D:\WORKSPACE\django_web_ansible\static'
+STATIC_ROOT = ''
 STATICFILES_DIRS = (
     BASE_DIR + '/statics',
 )
@@ -78,14 +78,12 @@ INSTALLED_APPS = (
     'devops.gaga',
     'devops.service',
     'devops.pagination',
-    #    # Uncomment the next line to enable admin documentation:
-    #    'django.contrib.admindocs',
     'south',
     'kombu.transport.django',
     'djcelery',
     'devops.apps.ansible',
     'devops.apps.account',
-    'guardian',
+    # 'guardian',
 
 )
 
@@ -110,31 +108,28 @@ WSGI_APPLICATION = 'devops.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-'''DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        #'NAME': 'py_test',                      # Or path to database file if using sqlite3.
-        'NAME': 'apexit',
-        # The following settings are not used with sqlite3:
-        #'USER': 'root',
-        #'PASSWORD': '',
-        'USER': 'root',
-        'PASSWORD': '111111',
-        'HOST': '192.168.0.35',
-        'PORT': '3306',
-    }
-}'''
-DATABASE_ENGINE = 'sqlite3'
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'ATOMIC_REQUESTS': True
+        'ENGINE': 'django.db.backends.mysql',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        # 'NAME': 'py_test',                      # Or path to database file if using sqlite3.
+        'NAME': 'devops',
+        'USER': 'root',
+        'PASSWORD': '123456',
+        'HOST': '192.168.210.115',
+        'PORT': '3306',
     }
 }
+# DATABASE_ENGINE = 'sqlite3'
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#         'ATOMIC_REQUESTS': True
+#     }
+# }
 
 SOUTH_DATABASE_ADAPTERS = {
-    'default': 'south.db.sqlite3'
+    'default': 'south.db.mysql'
 }
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -170,7 +165,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'official.settings.extern_context',
             ],
         },
     },
@@ -244,6 +238,7 @@ LOGGING = {
 
 if 'djcelery' in INSTALLED_APPS:
     import djcelery
+
     djcelery.setup_loader()
 
 BROKER_URL = 'django://'
@@ -257,4 +252,3 @@ CELERYBEAT_MAX_LOOP_INTERVAL = 60
 CELERYD_POOL = 'celery.concurrency.threads:TaskPool'
 
 ANONYMOUS_USER_ID = -1
-

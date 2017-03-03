@@ -1,5 +1,5 @@
 from django.utils.importlib import import_module
-from apps.ansible.elfinder.conf import settings as ls 
+from devops.apps.ansible.elfinder.conf import settings as ls
 
 
 def get_path_driver(hash_, optionset):

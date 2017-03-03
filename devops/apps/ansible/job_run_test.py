@@ -1,5 +1,5 @@
-from apps.ansible.models import *
-from apps.ansible.path_utils import *
+from devops.apps.ansible.models import *
+from devops.apps.ansible.path_utils import *
 import random
 import cStringIO
 import logging
@@ -11,7 +11,7 @@ import traceback
 from celery import Task
 from django.conf import settings
 import pexpect
-from apps.ansible.tasks import *
+from devops.apps.ansible.tasks import *
 
 #job_pk=init_job()
 #start_job(job_pk)

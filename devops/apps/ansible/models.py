@@ -1,23 +1,23 @@
 # -*- coding : utf-8 -*-
-from django.conf import settings
+
 from django.db import models, DatabaseError
-from django.db.models import  SET_NULL
+from django.db.models import SET_NULL
 from django.utils.timezone import now
 from jsonfield import JSONField
 from djcelery.models import TaskMeta
-
-from apps.ansible.path_utils import *
-import time,datetime
+from devops.apps.ansible.path_utils import *
+import time, datetime
 
 # Create your models here.
 
 PERM_INVENTORY_DEPLOY = 'run'
-PERM_INVENTORY_CHECK  = 'check'
+PERM_INVENTORY_CHECK = 'check'
 
 JOB_TYPE_CHOICES = [
     (PERM_INVENTORY_DEPLOY, 'Run'),
     (PERM_INVENTORY_CHECK, 'Check'),
-    ]
+]
+
 
 class Package(models.Model):
     """ docstring for Package """
@@ -26,13 +26,14 @@ class Package(models.Model):
         related_name='package',
         null=True,
         on_delete=models.SET_NULL,
-    ) 
+    )
     version = models.IntegerField()
     date = models.DateTimeField(auto_now_add=True)
     scmurl = models.URLField(blank=False)
 
     def __unicode__(self):
         return u'%s' % (self.id)
+
 
 class PrimordialModel(models.Model):
     '''
@@ -43,15 +44,17 @@ class PrimordialModel(models.Model):
     class Meta:
         abstract = True
 
-    description   = models.TextField(blank=True, default='')
-    created_by    = models.ForeignKey('auth.User', on_delete=SET_NULL, null=True, related_name='%s(class)s_created', editable=False) # not blank=False on purpose for admin!
+    description = models.TextField(blank=True, default='')
+    created_by = models.ForeignKey('auth.User', on_delete=SET_NULL, null=True, related_name='%s(class)s_created',
+                                   editable=False)  # not blank=False on purpose for admin!
     creation_date = models.DateTimeField(auto_now_add=True)
-    #tags          = models.ManyToManyField('Tag', related_name='%(class)s_by_tag', blank=True)
-    #audit_trail   = models.ManyToManyField('AuditTrail', related_name='%(class)s_by_audit_trail', blank=True)
-    active        = models.BooleanField(default=True)
+    # tags          = models.ManyToManyField('Tag', related_name='%(class)s_by_tag', blank=True)
+    # audit_trail   = models.ManyToManyField('AuditTrail', related_name='%(class)s_by_audit_trail', blank=True)
+    active = models.BooleanField(default=True)
 
     def __unicode__(self):
-        return unicode("%s-%s"% (self.name, self.id))
+        return unicode("%s-%s" % (self.name, self.id))
+
 
 class CommonModel(PrimordialModel):
     ''' a base model where the name is unique '''
@@ -61,6 +64,7 @@ class CommonModel(PrimordialModel):
 
     name = models.CharField(max_length=128, unique=True)
 
+
 class CommonModelNameNotUnique(PrimordialModel):
     ''' a base model where the name is not unique '''
 
@@ -69,6 +73,7 @@ class CommonModelNameNotUnique(PrimordialModel):
 
     name = models.CharField(max_length=128, unique=False)
 
+
 class Credential(CommonModelNameNotUnique):
     '''
     A credential contains information about how to talk to a remote set of hosts
@@ -76,9 +81,8 @@ class Credential(CommonModelNameNotUnique):
     If used with sudo, a sudo password should be set if required.
     '''
 
-
-    user            = models.ForeignKey('auth.User', null=True, default=None, blank=True, on_delete=SET_NULL, related_name='credentials')
-
+    user = models.ForeignKey('auth.User', null=True, default=None, blank=True, on_delete=SET_NULL,
+                             related_name='credentials')
 
     # IF ssh_key_path is SET
     #
@@ -153,7 +157,7 @@ class Credential(CommonModelNameNotUnique):
 
     @property
     def needs_ssh_key_unlock(self):
-        return 'ENCRYPTED' in self.ssh_key_data and\
+        return 'ENCRYPTED' in self.ssh_key_data and \
                (not self.ssh_key_unlock or self.ssh_key_unlock == 'ASK')
 
     @property
@@ -220,6 +224,7 @@ class JobTemplate(CommonModel):
         default='',
     )
 
+
 class Project(CommonModel):
     '''
     A project represents a playbook git repo that can access a set of inventories
@@ -228,18 +233,19 @@ class Project(CommonModel):
     # this is not part of the project, but managed with perms
     # inventories      = models.ManyToManyField('Inventory', blank=True, related_name='projects')
 
-#    local_path = models.CharField( max_length=1024 )
-    #default_playbook = models.CharField(max_length=1024)
+    #    local_path = models.CharField( max_length=1024 )
+    # default_playbook = models.CharField(max_length=1024)
     scmtype = models.CharField(max_length=64)
-    scmurl = models.URLField(blank=True,null=True)
-    #package = models.ManyToManyField(Package,blank=True)
-    group = models.CharField(max_length=128,null = True, blank = True)
+    scmurl = models.URLField(blank=True, null=True)
+    # package = models.ManyToManyField(Package,blank=True)
+    group = models.CharField(max_length=128, null=True, blank=True)
+
     class Meta:
         permissions = (
-            ('access_proj','Access Project'),
-            ('config_proj','Config Project'),
-            ('execute_proj','Execute Project'),
-            ('manage_proj','Manage Project'),
+            ('access_proj', 'Access Project'),
+            ('config_proj', 'Config Project'),
+            ('execute_proj', 'Execute Project'),
+            ('manage_proj', 'Manage Project'),
         )
 
     @property
@@ -254,29 +260,27 @@ class Project(CommonModel):
         if self.name:
             project_playbook_path = get_playbooks_dir(self.name)
             if os.path.exists(project_playbook_path):
-                for dirpath,dirnames,filenames in os.walk(project_playbook_path):
+                for dirpath, dirnames, filenames in os.walk(project_playbook_path):
                     for filename in filenames:
                         if filename.startswith("."):
                             continue
                         if os.path.splitext(filename)[-1] != '.yml':
                             continue
-                        playbook = os.path.join(dirpath,filename)
+                        playbook = os.path.join(dirpath, filename)
                         playbook = os.path.relpath(playbook, project_playbook_path)
                         playbooks.append(playbook)
-        #print sorted(playbooks)
+        # print sorted(playbooks)
         return sorted(playbooks)
-
-
 
     @property
     def available_inventories(self):
         inventories = []
         if self.name:
-            project_inventories_path= get_inventories_dir(self.name)
+            project_inventories_path = get_inventories_dir(self.name)
             if os.path.exists(project_inventories_path):
-                for dirpath,dirnames,filenames in os.walk(project_inventories_path.encode('utf-8')):
+                for dirpath, dirnames, filenames in os.walk(project_inventories_path.encode('utf-8')):
                     for filename in filenames:
-                        inventory = os.path.join(dirpath,filename)
+                        inventory = os.path.join(dirpath, filename)
                         inventory = os.path.relpath(inventory, project_inventories_path)
                         inventories.append(inventory)
         return inventories
@@ -285,11 +289,11 @@ class Project(CommonModel):
     def available_varfiles(self):
         vars_files = []
         if self.name:
-            project_var_path= get_vars_dir(self.name)
+            project_var_path = get_vars_dir(self.name)
             if os.path.exists(project_var_path):
-                for dirpath,dirnames,filenames in os.walk(project_var_path):
+                for dirpath, dirnames, filenames in os.walk(project_var_path):
                     for filename in filenames:
-                        vars_file = os.path.join(dirpath,filename)
+                        vars_file = os.path.join(dirpath, filename)
                         vars_file = os.path.relpath(vars_file, project_var_path)
                         vars_files.append(vars_file)
         return vars_files
@@ -298,14 +302,15 @@ class Project(CommonModel):
     def available_packages(self):
         packages = []
         if self.name:
-            project_packages_path= get_packages_dir(self.name)
+            project_packages_path = get_packages_dir(self.name)
             if os.path.exists(project_packages_path):
-                for dirpath,dirnames,filenames in os.walk(project_packages_path):
+                for dirpath, dirnames, filenames in os.walk(project_packages_path):
                     for filename in filenames:
-                        package = os.path.join(dirpath,filename)
+                        package = os.path.join(dirpath, filename)
                         package = os.path.relpath(package, project_packages_path)
                         packages.append(package)
         return packages
+
 
 class Job(CommonModel):
     '''
@@ -313,16 +318,18 @@ class Job(CommonModel):
     credential.  It represents a single invocation of ansible-playbook with the
     given parameters.
     '''
+
     class Meta:
         ordering = ['-creation_date']
+
     STATUS_CHOICES = [
-        ('new', 'New'),                  # Job has been created, but not started.
-        ('pending', 'Pending'),          # Job has been queued, but is not yet running.
-        ('running', 'Running'),          # Job is currently running.
-        ('successful', 'Successful'),    # Job completed successfully.
-        ('failed', 'Failed'),            # Job completed, but with failures.
-        ('error', 'Error'),              # The job was unable to run.
-        ('canceled', 'Canceled'),        # The job was canceled before completion.
+        ('new', 'New'),  # Job has been created, but not started.
+        ('pending', 'Pending'),  # Job has been queued, but is not yet running.
+        ('running', 'Running'),  # Job is currently running.
+        ('successful', 'Successful'),  # Job completed successfully.
+        ('failed', 'Failed'),  # Job completed, but with failures.
+        ('error', 'Error'),  # The job was unable to run.
+        ('canceled', 'Canceled'),  # The job was canceled before completion.
     ]
 
     project = models.ForeignKey(
@@ -418,16 +425,16 @@ class Job(CommonModel):
     )
     countdown = models.IntegerField(default=0)
     execute_date = models.DateTimeField(
-        blank = True,
-        default = datetime.datetime.now,
+        blank=True,
+        default=datetime.datetime.now,
     )
 
     def get_id(self):
         today = time.strftime("%Y%m%d", time.localtime(time.time()))
-        today_len = len(Job.objects.filter(name__contains = today))
+        today_len = len(Job.objects.filter(name__contains=today))
         today_id = str(today_len + 1)
         if len(today_id) < 5:
-            today_id = ''.join(['0' for i in range(5-len(today_id))]) + today_id
+            today_id = ''.join(['0' for i in range(5 - len(today_id))]) + today_id
         return today_id
 
     @property
@@ -443,20 +450,20 @@ class Job(CommonModel):
         if self.status != 'new':
             return False
 
-        #username = kwargs.get('username', self.username)
+        # username = kwargs.get('username', self.username)
 
         opts = {}
         self.status = 'pending'
         self.save(update_fields=['status'])
 
-        #debug the putput of command
-        job = Job.objects.get(pk = self.pk)
+        # debug the putput of command
+        job = Job.objects.get(pk=self.pk)
         buildjob = BuildJob(job)
         args, cwd, env, passwords = buildjob.build()
-        #print ' '.join(args)
+        # print ' '.join(args)
 
-        #task_result = RunJob().delay(self.pk, **opts)
-        task_result = RunJob().apply_async(args=[self.pk],countdown=self.countdown, kwargs=opts)
+        # task_result = RunJob().delay(self.pk, **opts)
+        task_result = RunJob().apply_async(args=[self.pk], countdown=self.countdown, kwargs=opts)
         # The TaskMeta instance in the database isn't created until the worker
         # starts processing the task, so we can only store the task ID here.
         self.celery_task_id = task_result.task_id
@@ -469,4 +476,3 @@ class Job(CommonModel):
                 self.cancel_flag = True
                 self.save(update_fields=['cancel_flag'])
         return self.cancel_flag
-

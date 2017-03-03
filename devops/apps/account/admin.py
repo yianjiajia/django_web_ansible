@@ -5,7 +5,7 @@ this module register profile of user to admin
 # -*- coding : utf-8 -*-
 
 from django.contrib import admin
-from apps.account.models import Profile
+from devops.apps.account.models import Profile
 
 
 class ProfileAdmin(admin.ModelAdmin):

@@ -25,12 +25,12 @@ from celery import Task
 from django.conf import settings
 import pexpect
 from django.core import urlresolvers
-from apps.ansible.models import *
-from apps.ansible.path_utils import *
-from apps.account.models import Profile
+from devops.apps.ansible.models import *
+from devops.apps.ansible.path_utils import *
+from devops.apps.account.models import Profile
 from devops.lib.exceptions_renderable import PopupException
 from django.contrib.auth.models import User
-from apps.account.crypt import AESdecrypt
+from devops.apps.account.crypt import AESdecrypt
 
 import smtplib
 from email.mime.text import MIMEText
