@@ -42,17 +42,18 @@ import os.path
 
 from threading import Thread
 from Queue import Queue
-from ansible.inventory import Inventory
+from ansible.inventory.ini import InventoryParser
 import paramiko
 import socket
 
 LOG = logging.getLogger(__name__)
 
+
 __all__ = ['RunJob']
 
 
 def getfilecontent(project_name):
-    path = os.path.join(settings.ANSIBLE_PROJECTS_ROOT,project_name,'inventories','hosts')
+    path = os.path.join(settings.ANSIBLE_PROJECTS_ROOT, project_name, 'inventories', 'hosts')
     content = ""
     if not os.path.exists(path):
         f = open(path, 'w')
@@ -62,22 +63,24 @@ def getfilecontent(project_name):
         content = f.read()
     return content
 
+
 def savefilecontent(project_name, content):
     if not content:
         return
-    path = os.path.join(settings.ANSIBLE_PROJECTS_ROOT,project_name,'inventories','hosts')
+    path = os.path.join(settings.ANSIBLE_PROJECTS_ROOT, project_name, 'inventories', 'hosts')
     f = open(path, 'w')
     f.write(content)
     f.close()
-    
+
 
 def sendmail(email, status, job_pk, project_name):
-    msg = MIMEText('Task is %s , please visit http://your.domain.name/ansible/%s/result/%s for detail' % (status,project_name,job_pk))
+    msg = MIMEText('Task is %s , please visit http://your.domain.name/ansible/%s/result/%s for detail' % (
+    status, project_name, job_pk))
 
     subject = "Deploy Task Notice"
-    msg['subject'] = Header(subject,'utf-8')
-    
-    sender= settings.MAIL_SENDER
+    msg['subject'] = Header(subject, 'utf-8')
+
+    sender = settings.MAIL_SENDER
     receivers = email.split(',')
     msg['From'] = sender
     msg['To'] = ','.join(receivers)
@@ -87,28 +90,29 @@ def sendmail(email, status, job_pk, project_name):
     LOG.info("Successfully send email")
     smtpObj.quit()
 
+
 def get_allusers():
-    allusers = User.objects.values('id','username')
+    allusers = User.objects.values('id', 'username')
     return allusers
 
-    
+
 def get_profile(job_pk):
     job = Job.objects.get(pk=job_pk)
     user = job.created_by
-    #user = User.objects.get(username='common')
+    # user = User.objects.get(username='common')
     try:
-        profile = Profile.objects.get(user = user)
+        profile = Profile.objects.get(user=user)
     except:
-#        user = User.objects.get(username='common')
-#        profile = Profile.objects.get(user = user)
-        raise PopupException('you need to set credential, if you want to execute the task, you need to paste your  SSH Password,  SSH Pub Keys (DSA)')
+        #        user = User.objects.get(username='common')
+        #        profile = Profile.objects.get(user = user)
+        raise PopupException(
+            'you need to set credential, if you want to execute the task, you need to paste your  SSH Password,  SSH Pub Keys (DSA)')
     return profile
 
-class BuildJob:
 
+class BuildJob:
     def __init__(self, job):
         self.job = job
-
 
     def get_path_to(self, *args):
         '''
@@ -133,7 +137,7 @@ class BuildJob:
         ssh_password = profile.ssh_password
         user = profile.user.username
 
-        #args = ['ansible-playbook', '-i', job.inventory]
+        # args = ['ansible-playbook', '-i', job.inventory]
         args = [settings.ANSIBLE_PLAYBOOK, '-i', job.inventory]
         args.append(job.playbook)
         if job.limit:
@@ -155,8 +159,6 @@ class BuildJob:
             args.append('--ask-pass')
 
         LOG.info(" ".join(args))
-
-
 
         return args
 
@@ -214,7 +216,7 @@ class RunJob(Task):
             ]
             result_id = child.expect(expect_list, timeout=2)
             if result_id == 0:
-#                child.sendline(passwords.get('ssh_unlock_key', ''))
+                #                child.sendline(passwords.get('ssh_unlock_key', ''))
                 profile = get_profile(job_pk)
                 child.sendline(profile.ssh_password)
             elif result_id == 1:
@@ -222,9 +224,9 @@ class RunJob(Task):
             elif result_id == 2:
                 child.sendline(job.sudo_password)
             elif result_id == 3:
-#                child.sendline(passwords.get('ssh_password', ''))
+                #                child.sendline(passwords.get('ssh_password', ''))
                 profile = get_profile(job_pk)
-                child.sendline(AESdecrypt("pass34",profile.ssh_password))
+                child.sendline(AESdecrypt("pass34", profile.ssh_password))
             job_updates = {}
             if logfile_pos != logfile.tell():
                 job_updates['result_stdout'] = logfile.getvalue()
@@ -256,22 +258,21 @@ class RunJob(Task):
                         result_stderr=stderr, result_traceback=tb)
 
 
-
 class DeployKeyThread(Thread):
     """
     Consumer thread.  Reads hosts from the queue and deploys the
     key to them.
     """
 
-    def __init__(self,config):
+    def __init__(self, config):
         self.config = config
         Thread.__init__(self)
 
     def deploy_key(self, server, config):
-        prefix = "  copying key to %s@%s:%s/%s..." %(config['username'],
-                                                    server,
-                                                    config['ssh_dir'],
-                                                    config['authorized_keys'])
+        prefix = "  copying key to %s@%s:%s/%s..." % (config['username'],
+                                                      server,
+                                                      config['ssh_dir'],
+                                                      config['authorized_keys'])
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         try:
@@ -280,40 +281,41 @@ class DeployKeyThread(Thread):
                            password=config['password'],
                            port=config['port'],
                            timeout=config['timeout_seconds'])
-            client.exec_command('mkdir -p %s' %config['ssh_dir'])
+            client.exec_command('mkdir -p %s' % config['ssh_dir'])
         except socket.error:
-            #print ("%s %sCONNECTION FAILURE%s" % (prefix, Fore.RED, Fore.RESET))
+            # print ("%s %sCONNECTION FAILURE%s" % (prefix, Fore.RED, Fore.RESET))
             return ("%s CONNECTION FAILURE" % (prefix))
-            #print ("%s CONNECTION FAILURE" % (prefix))
-            #return False
+            # print ("%s CONNECTION FAILURE" % (prefix))
+            # return False
         except paramiko.AuthenticationException:
-            #print ("%s %sAUTHENTICATION FAILURE%s" % (prefix, Fore.RED, Fore.RESET))
+            # print ("%s %sAUTHENTICATION FAILURE%s" % (prefix, Fore.RED, Fore.RESET))
             return ("%s AUTHENTICATION FAILURE" % (prefix))
-            #print ("%s AUTHENTICATION FAILURE" % (prefix))
-            #return False
+            # print ("%s AUTHENTICATION FAILURE" % (prefix))
+            # return False
         if config['append']:
-            client.exec_command('echo "%s" >> %s/%s' %(config['key'], config['ssh_dir'], config['authorized_keys']))
+            client.exec_command('echo "%s" >> %s/%s' % (config['key'], config['ssh_dir'], config['authorized_keys']))
         else:
-            client.exec_command('echo "%s" > %s/%s' %(config['key'], config['ssh_dir'], config['authorized_keys']))
+            client.exec_command('echo "%s" > %s/%s' % (config['key'], config['ssh_dir'], config['authorized_keys']))
         client.exec_command('chmod 644 %s/%s' % (config['ssh_dir'], config['authorized_keys']))
-        client.exec_command('chmod 700 %s' %config['ssh_dir'])
+        client.exec_command('chmod 700 %s' % config['ssh_dir'])
         return "%s SUCCESS!" % (prefix)
-        #return True
+        # return True
 
     def run(self):
         while True:
             global queue
             server = queue.get()
-            result = self.deploy_key(server,self.config)
+            result = self.deploy_key(server, self.config)
             global results
             results.append(result)
             queue.task_done()
 
+
 def get_hosts(hostfile, pattern):
-    hosts = []
-    inventory = Inventory(hostfile)
-    hosts = inventory.list_hosts(pattern)
+    inventory = InventoryParser(hostfile)
+    hosts = inventory.groups.get(pattern)
     return hosts
+
 
 def get_sshkey_deploy(hosts, user, password, key):
     config = {}
@@ -321,7 +323,7 @@ def get_sshkey_deploy(hosts, user, password, key):
     config['password'] = password
     config['key'] = key
     config['authorized_keys'] = "authorized_keys"
-    config['ssh_dir'] = "~/.ssh" 
+    config['ssh_dir'] = "~/.ssh"
     config['port'] = 22
     config['timeout_seconds'] = 3
     config['threads'] = 100
@@ -329,9 +331,9 @@ def get_sshkey_deploy(hosts, user, password, key):
 
     global results
     results = []
-    
-    global queue 
-    queue = Queue(maxsize=10*config['threads'])
+
+    global queue
+    queue = Queue(maxsize=10 * config['threads'])
     deployer_threads = []
     for i in range(config['threads']):
         deployer_thread = DeployKeyThread(config)

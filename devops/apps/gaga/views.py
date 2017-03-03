@@ -1,19 +1,18 @@
 # coding=utf-8
-from django.shortcuts import render, render_to_response
-from django.http import HttpResponse, HttpResponseRedirect
+from django import forms
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.template import RequestContext
-from django import forms
-from models import User
-
-from devops.util.handle_uploaded_file import handle_uploaded_file
-
-from django.views.decorators.csrf import csrf_exempt
-from devops.gaga.models import FileServer, LinuxServer, NamePassword, Resource, ServerIp
 from django.core import serializers
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, render_to_response
+from django.template import RequestContext
+from django.views.decorators.csrf import csrf_exempt
+
+from devops.apps.gaga.models import FileServer, LinuxServer, NamePassword, Resource, ServerIp
 from devops.lib.django_util import login_not_required
+from devops.util.handle_uploaded_file import handle_uploaded_file
+from models import User
 
 
 # django表单系统

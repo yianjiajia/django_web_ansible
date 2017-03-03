@@ -9,3 +9,4 @@ django-guardian
 python-ldap
 supervisor
 threadpool
+django==1.10

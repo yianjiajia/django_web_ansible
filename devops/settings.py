@@ -78,12 +78,12 @@ INSTALLED_APPS = (
     'devops.gaga',
     'devops.service',
     'devops.pagination',
-    'south',
+    #'south',
     'kombu.transport.django',
     'djcelery',
     'devops.apps.ansible',
     'devops.apps.account',
-    # 'guardian',
+    'guardian',
 
 )
 
@@ -218,7 +218,7 @@ LOGGING = {
         'file_handler': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'E:\workspace\django_web_ansible/server.log',
+            'filename': 'server.log',
             'formatter': 'simple'
         },
     },

@@ -2,7 +2,8 @@
 __author__ = 'yanjiajia'
 
 from django.shortcuts import render_to_response
-from devops.gaga.models import Fileserver
+
+from devops.apps.gaga import Fileserver
 
 
 def ssh(request):

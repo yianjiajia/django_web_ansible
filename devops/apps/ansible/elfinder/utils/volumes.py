@@ -1,4 +1,3 @@
-from django.utils.importlib import import_module
 from devops.apps.ansible.elfinder.conf import settings as ls
 
 
@@ -29,7 +28,7 @@ def instantiate_driver(root_options):
     if isinstance(class_, basestring) and class_:
         try:
             split = class_.split('.')
-            storage_module = import_module('.'.join(split[:-1]))
+            storage_module = __import__('.'.join(split[:-1]))
             volume = getattr(storage_module, split[-1])()
         except:
             raise Exception('Could not import driver "%s"' % class_)

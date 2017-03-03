@@ -3,7 +3,7 @@ from django.http import HttpResponse, Http404
 from django.utils.decorators import method_decorator
 from django.views.generic.base import View
 from django.views.decorators.csrf import csrf_exempt
-from exceptions import ElfinderErrorMessages
+from devops.apps.ansible.elfinder.exceptions import ElfinderErrorMessages
 from devops.apps.ansible.elfinder.connector import ElfinderConnector
 from devops.apps.ansible.elfinder.conf import settings as ls
 from devops.apps.ansible.path_utils import *
